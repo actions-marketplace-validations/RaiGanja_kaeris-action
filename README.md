@@ -88,6 +88,34 @@ jobs:
 | `placeholder-issues` | Total placeholder-mismatch count (should be `0`) |
 | `check-exit-code` | Exit code of `kaeris check` (0 clean, 1 problem, 2 bad usage) |
 
+## Findings inside the pull request (SARIF)
+
+`check` can emit a SARIF 2.1.0 report. Upload it and every finding lands as an annotation on
+the exact line of the locale file — in the diff, next to the human reviewer's comments —
+instead of hiding in the job log.
+
+```yaml
+- uses: RaiGanja/kaeris-action@v1
+  with:
+    mode: check
+    source: locales/en.json
+    languages: de,fr,es
+    sarif-file: kaeris.sarif
+
+- uses: github/codeql-action/upload-sarif@v3
+  if: always()            # upload the report even when the gate failed — that is when it matters
+  with:
+    sarif_file: kaeris.sarif
+```
+
+The report is written even on a clean run (an empty result set), because `upload-sarif`
+fails the workflow if the file is missing, and "nothing was wrong" must not look like "the
+step is broken".
+
+Note on visibility: code-scanning uploads are free on public repositories; on private ones
+they need GitHub Advanced Security. Without it the gate still works exactly as before — the
+job fails and the log lists every finding — you just do not get the inline annotations.
+
 ## What it protects against
 
 The deterministic checks (no API needed) catch the bugs that actually break apps: lost or renamed placeholders, number drift (`Delete 5 files` → `Delete 50 files`), the ICU/CLDR plural categories a target language requires, and UI-overflow risk. Every number in the PR summary comes from a real `kaeris check --json` run — nothing is fabricated.
