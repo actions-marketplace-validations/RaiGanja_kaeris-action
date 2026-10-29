@@ -20,7 +20,7 @@ inputs:
     required: false
     default: ""
   api-key:
-    description: "KAERIS API key (Pro/Team). Omit for the free anonymous tier. Unused in check mode."
+    description: "KAERIS API key, e.g. the free key from kaeris.dev/docs/key (no account). Omit for the free demo. Unused in check mode."
     required: false
     default: ""
   openrouter-key:

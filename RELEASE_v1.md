@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: RaiGanja/kaeris-action@v1
+      - uses: kaeris-io/kaeris-action@v1
         with:
           mode: check
           source: locales/en.json
@@ -40,12 +40,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: kaeris
-        uses: RaiGanja/kaeris-action@v1
+        uses: kaeris-io/kaeris-action@v1
         with:
           mode: translate
           source: locales/en.json
           languages: es,fr,de,ja
-          api-key: ${{ secrets.KAERIS_API_KEY }}   # omit for the free anonymous tier
+          api-key: ${{ secrets.KAERIS_API_KEY }}   # omit for the free demo
       - if: steps.kaeris.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
